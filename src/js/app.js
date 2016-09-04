@@ -145,38 +145,135 @@ var finScale = d3.scaleLinear()
   .domain([0, 100])
   .range([0, SPINE_SIZE]);
 
+var Spine = React.createClass({
+  render: function() {
+    const spine = this.props.spine;
+    const id = spine.name + "-" + spine.type;
+    return (
+      <g
+        id={id}
+        className="spine"
+      >
+        <path
+          className={spine.type}
+          d={drawSpine(spine.position, SPINE_WIDTH, spine.height)}
+        >
+        </path>
+      </g>
+    );
+  }
+});
+
+var Spines = React.createClass({
+  render: function() {
+    const transform = "translate(" + (WIDTH / 4.6) + "," + bodyScale(-fish.body.style / 2.5) + ")";
+    const spines = fish.spines.map(function(spine) {
+      return <Spine spine={spine} key={spine.name + "-" + spine.type} />;
+    });
+    return (
+      <g
+        id="spines"
+        transform={transform}
+      >
+      {spines}
+      </g>
+    );
+  }
+});
+
 var Body = React.createClass({
   render: function() {
     return (
-      <svg>
-        <g id="body">
-          <path
-            id="back"
-            d={drawBody(0, 0, WIDTH/2, bodyScale(40))}
-          >
-          </path>
-          <path
-            id="belly"
-            d={drawBody(0, 0, WIDTH/2, bodyScale(30))}
-          >
-          </path>
-        </g>
-      </svg>
+      <g id="body">
+        <path
+          id="belly"
+          d={drawBody(0, 0, WIDTH/2, bodyScale(fish.body.market_cap))}
+        >
+        </path>
+        <path
+          id="back"
+          d={drawBody(0, 0, WIDTH/2, -bodyScale(fish.body.style))}
+        >
+        </path>
+      </g>
+    );
+  }
+});
+
+var Eye = React.createClass({
+  render: function() {
+    var transform = "translate(" + ((WIDTH / 2) / 1.2) + "," + 0 + ")";
+    return (
+      <g
+        id="eye"
+        transform={transform}
+      >
+        <circle
+          id="eye-outline"
+          r={EYE_RADIUS}
+          cx="0"
+          cy="0"
+        >
+        </circle>
+        <circle
+          id="eye-pupil"
+          r={eyeScale(fish.return)}
+        >
+        </circle>
+      </g>
+    );
+  }
+});
+
+var Fin = React.createClass({
+  render: function() {
+    const fin = this.props.fin;
+    const transform = fin.name === "defensive" ? "translate(" + (WIDTH / 3.45) + "," + 10 + ")" : "translate(0,0)";
+    return (
+      <g
+        id={fin.name}
+        className="fin"
+        transform={transform}
+      >
+        <path
+          d={drawFin(5, 0, finScale(fin.size), fin.direction)}
+        >
+        </path>
+      </g>
     );
   }
 })
 
+var Tail = React.createClass({
+  render: function() {
+    const fins = fish.tail.map(function(fin) {
+      return <Fin fin={fin} key={fin.name} />;
+    });
+    return (
+      <g
+        id="tail"
+      >
+      {fins}
+      </g>
+    );
+  }
+});
+
 var Chart = React.createClass({
   render: function() {
-    var initTransform = "translate(" + getXPosition() + "," + getYPosition() + ")";
+    var transform = "translate(" + getXPosition() + "," + getYPosition() + ")";
     return (
       <svg>
         <g
           id="chernoff"
           className={this.props.strategy}
-          transform={initTransform}
+          transform={transform}
         >
+          <Spines />
           <Body />
+          <Eye />
+          <Fin fin={fish.fin} />
+          <Tail />
         </g>
       </svg>
     );
@@ -185,7 +282,6 @@ var Chart = React.createClass({
 
 var Form = React.createClass({
   handleChange: function(event) {
-    console.log(this.refs.strategy.value);
     this.props.onUserInput(
       this.refs.strategy.value,
     );
