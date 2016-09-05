@@ -33,12 +33,20 @@ body {
   flex: 5;
   padding: 1rem;
   overflow: auto;
+  
+  @media screen and (max-width: $md) {
+    flex: 4;
+  }
 }
 
 #chart {
   display: flex;
   flex: 5;
   background-color: $gray-l;
+
+  @media screen and (max-width: $md) {
+    flex: 6;
+  }
 }
 
 svg {
@@ -153,6 +161,12 @@ button {
     transition: $transition;
     border-color: $gray;
   }
+
+  &:active {
+    transition: $transition;
+    color: #fff;
+    background-color: $gray;
+  }
 }
 
 form {
@@ -252,7 +266,7 @@ label {
 footer {
   margin: 1rem 0 3rem;
   color: $gray;
-  font-size: .95rem;
+  font-size: .9rem;
   font-weight: 300;
   text-transform: uppercase;
 }

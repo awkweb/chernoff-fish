@@ -16,16 +16,16 @@ const WIDTH = 500,
   SPINE_SIZE = 50,
   DURATION = 1000;
 
-function getXPosition() {
+function getXPosition(width, breakpoint) {
   var screenWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-  var x = screenWidth < BREAKPOINT ? (screenWidth / 2) - (WIDTH / 4) : (screenWidth / 4) - (WIDTH / 4);
+  var x = screenWidth < breakpoint ? (screenWidth / 2) - (width / 4) : (screenWidth / 4) - (width / 4);
   return x;
 }
 
-function getYPosition() {
+function getYPosition(breakpoint) {
   var screenWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
   var screenHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-  var y = screenWidth < BREAKPOINT ? (screenHeight / 4) + 25: (screenHeight / 2);
+  var y = screenWidth < breakpoint ? (screenHeight / 4) + 55: (screenHeight / 2);
   return y;
 }
 
@@ -51,25 +51,29 @@ function drawFin(x, y, width, direction) {
 
 function updateWindow(){
   d3.select("#chernoff")
-    .attr("transform", "translate(" + getXPosition() + "," + getYPosition() + ")");
+    .attr("transform", "translate(" + getXPosition(WIDTH, BREAKPOINT) + "," + getYPosition(BREAKPOINT) + ")");
 }
 window.onresize = updateWindow;
 
-var spineScale = d3.scaleLinear()
+function percentFormatter(v) {
+  return `${v}%`;
+}
+
+const spineScale = d3.scaleLinear()
   .clamp(true)
   .domain([0, 100])
   .range([0, SPINE_HEIGHT]);
 
-var bodyScale = d3.scaleLinear()
+const bodyScale = d3.scaleLinear()
   .domain([0, 100])
   .range([0, BODY_HEIGHT]);
 
-var eyeScale = d3.scaleLinear()
+const eyeScale = d3.scaleLinear()
   .clamp(true)
   .domain([0, 100])
   .range([0, EYE_RADIUS - 1]);
 
-var finScale = d3.scaleLinear()
+const finScale = d3.scaleLinear()
   .clamp(true)
   .domain([0, 100])
   .range([0, SPINE_SIZE]);
@@ -131,7 +135,7 @@ var Body = React.createClass({
 
 var Eye = React.createClass({
   render: function() {
-    var transform = "translate(" + ((WIDTH / 2) / 1.2) + "," + 0 + ")";
+    const transform = "translate(" + ((WIDTH / 2) / 1.2) + "," + 0 + ")";
     return (
       <g
         id="eye"
@@ -190,7 +194,7 @@ var Tail = React.createClass({
 
 var Fish = React.createClass({
   render: function() {
-    const transform = "translate(" + getXPosition() + "," + getYPosition() + ")";
+    const transform = "translate(" + getXPosition(WIDTH, BREAKPOINT) + "," + getYPosition(BREAKPOINT) + ")";
     const fins = [this.props.sensative, this.props.cyclical];
     const spines = [
       this.props.americas_dev,
@@ -318,6 +322,7 @@ var Form = React.createClass({
             ref="strategy"
             onChange={this.handleChange}
             className="select"
+            value={this.props.strategy}
           >
             <option value="long">Long</option>
             <option value="short">Short</option>
@@ -335,9 +340,9 @@ var Form = React.createClass({
             className="select"
             value={this.props.style}
           >
-            <option value="33">Growth</option>
-            <option value="66">Core</option>
-            <option value="99">Value</option>
+            <option value="23">Growth</option>
+            <option value="60">Core</option>
+            <option value="98">Value</option>
           </select>
         </div>
 
@@ -352,9 +357,9 @@ var Form = React.createClass({
             className="select"
             value={this.props.market_cap}
           >
-            <option value="33">Small</option>
-            <option value="66">Medium</option>
-            <option value="99">Large</option>
+            <option value="23">Small</option>
+            <option value="60">Medium</option>
+            <option value="98">Large</option>
           </select>
         </div>
 
@@ -367,6 +372,9 @@ var Form = React.createClass({
             <Rcslider
               onChange={this.handleReturnSliderChange}
               defaultValue={this.props.f_return}
+              value={this.props.f_return}
+              tipFormatter={percentFormatter}
+              tipTransitionName="rc-slider-tooltip-zoom-down"
             />
           </div>
         </div>
@@ -382,6 +390,9 @@ var Form = React.createClass({
             <Rcslider
               onChange={this.handleDefensiveSliderChange}
               defaultValue={this.props.defensive.percent}
+              value={this.props.defensive.percent}
+              tipFormatter={percentFormatter}
+              tipTransitionName="rc-slider-tooltip-zoom-down"
             />
           </div>
         </div>
@@ -395,6 +406,9 @@ var Form = React.createClass({
             <Rcslider
               onChange={this.handleCyclicalSliderChange}
               defaultValue={this.props.cyclical.percent}
+              value={this.props.cyclical.percent}
+              tipFormatter={percentFormatter}
+              tipTransitionName="rc-slider-tooltip-zoom-down"
             />
           </div>
         </div>
@@ -408,6 +422,9 @@ var Form = React.createClass({
             <Rcslider
               onChange={this.handleSensativeSliderChange}
               defaultValue={this.props.sensative.percent}
+              value={this.props.sensative.percent}
+              tipFormatter={percentFormatter}
+              tipTransitionName="rc-slider-tooltip-zoom-down"
             />
           </div>
         </div>
@@ -425,6 +442,9 @@ var Form = React.createClass({
               <Rcslider
                 onChange={this.handleAmericasEmSliderChange}
                 defaultValue={this.props.americas_em.percent}
+                value={this.props.americas_em.percent}
+                tipFormatter={percentFormatter}
+                tipTransitionName="rc-slider-tooltip-zoom-down"
               />
             </div>
           </div>
@@ -437,6 +457,9 @@ var Form = React.createClass({
               <Rcslider
                 onChange={this.handleAmericasDevSliderChange}
                 defaultValue={this.props.americas_dev.percent}
+                value={this.props.americas_dev.percent}
+                tipFormatter={percentFormatter}
+                tipTransitionName="rc-slider-tooltip-zoom-down"
               />
             </div>
           </div>
@@ -453,6 +476,9 @@ var Form = React.createClass({
               <Rcslider
                 onChange={this.handleAsiaEmSliderChange}
                 defaultValue={this.props.asia_em.percent}
+                value={this.props.asia_em.percent}
+                tipFormatter={percentFormatter}
+                tipTransitionName="rc-slider-tooltip-zoom-down"
               />
             </div>
           </div>
@@ -465,6 +491,9 @@ var Form = React.createClass({
               <Rcslider
                 onChange={this.handleAsiaDevSliderChange}
                 defaultValue={this.props.asia_dev.percent}
+                value={this.props.asia_dev.percent}
+                tipFormatter={percentFormatter}
+                tipTransitionName="rc-slider-tooltip-zoom-down"
               />
             </div>
           </div>
@@ -481,6 +510,9 @@ var Form = React.createClass({
               <Rcslider
                 onChange={this.handleEuropeEmSliderChange}
                 defaultValue={this.props.eu_em.percent}
+                value={this.props.eu_em.percent}
+                tipFormatter={percentFormatter}
+                tipTransitionName="rc-slider-tooltip-zoom-down"
               />
             </div>
           </div>
@@ -493,6 +525,9 @@ var Form = React.createClass({
               <Rcslider
                 onChange={this.handleEuropeDevSliderChange}
                 defaultValue={this.props.eu_dev.percent}
+                value={this.props.eu_dev.percent}
+                tipFormatter={percentFormatter}
+                tipTransitionName="rc-slider-tooltip-zoom-down"
               />
             </div>
           </div>
@@ -509,6 +544,9 @@ var Form = React.createClass({
               <Rcslider
                 onChange={this.handleAmeEmSliderChange}
                 defaultValue={this.props.ame_em.percent}
+                value={this.props.ame_em.percent}
+                tipFormatter={percentFormatter}
+                tipTransitionName="rc-slider-tooltip-zoom-down"
               />
             </div>
           </div>
@@ -521,6 +559,9 @@ var Form = React.createClass({
               <Rcslider
                 onChange={this.handleAmeDevSliderChange}
                 defaultValue={this.props.ame_dev.percent}
+                value={this.props.ame_dev.percent}
+                tipFormatter={percentFormatter}
+                tipTransitionName="rc-slider-tooltip-zoom-down"
               />
             </div>
           </div>
@@ -532,87 +573,110 @@ var Form = React.createClass({
 });
 
 var App = React.createClass({
+  getRandomNumber(max) {
+    return Math.ceil(Math.random() * max);
+  },
 
   generateRandomValues: function() {
-    const f_return = Math.ceil(Math.random() * 100);
-    const styleAndMarketCap = [33, 66, 99];
-    const style = styleAndMarketCap[Math.ceil(Math.random() * 3 - 1)];
-    const market_cap = styleAndMarketCap[Math.ceil(Math.random() * 3 - 1)];
-    const americas_em_percent = Math.ceil(Math.random() * 100);
-    var americas_dev_percent = 100;
-    const asia_em_percent = Math.ceil(Math.random() * 100);
-    var asia_dev_percent = 100;
-    const eu_em_percent = Math.ceil(Math.random() * 100);
-    var eu_dev_percent = 100;
-    const ame_em_percent = Math.ceil(Math.random() * 100);
-    var ame_dev_percent = 100;
+    const strategyValues = ["long", "short"];
+
+    const fReturn = Math.ceil(Math.random() * 100);
+    const styleAndMarketCapValues = [23, 60, 98];
+    const style = styleAndMarketCapValues[this.getRandomNumber(3) - 1];
+    const marketCap = styleAndMarketCapValues[this.getRandomNumber(3) - 1];
+    
+    const defensive = this.getRandomNumber(100);
+    const cyclical = this.getRandomNumber(100);
+    const sensative = this.getRandomNumber(100);
+    const sectorTotal = defensive + cyclical + sensative;
+
+    const americas = this.getRandomNumber(100);
+    const asia = this.getRandomNumber(100);
+    const eu = this.getRandomNumber(100);
+    const ame = this.getRandomNumber(100);
+    const regionTotal = americas + asia + eu + ame;
+
+    const americasTotal = (americas / regionTotal) * 100;
+    const asiaTotal = (asia / regionTotal) * 100;
+    const euTotal = (eu / regionTotal) * 100;
+    const ameTotal = (ame / regionTotal) * 100;
+
+    const americasEm = this.getRandomNumber(americasTotal);
+    const asiaEm = this.getRandomNumber(asiaTotal);
+    const euEm = this.getRandomNumber(eu);
+    const ameEm = this.getRandomNumber(ameTotal);
+
+    const americasDev = this.getRandomNumber(americasTotal);
+    const asiaDev = this.getRandomNumber(asiaTotal);
+    const euDev = this.getRandomNumber(eu);
+    const ameDev = this.getRandomNumber(ameTotal);
 
     return {
-      strategy: "long",
+      strategy: strategyValues[this.getRandomNumber(2) - 1],
       style: style,
-      market_cap: market_cap,
-      f_return: f_return,
+      market_cap: marketCap,
+      f_return: fReturn,
       defensive: {
         "name": "defensive",
-        "percent": 33,
+        "percent": (defensive / sectorTotal) * 100,
         "direction": 1
       },
       cyclical: {
         "name": "cyclical",
-        "percent": 33,
+        "percent": (cyclical / sectorTotal) * 100,
         "direction": -1
       },
       sensative: {
         "name": "sensative",
-        "percent": 33,
+        "percent": (sensative / sectorTotal) * 100,
         "direction": 1
       },
       americas_dev: {
         "name": "americas",
         "type": "dev",
-        "percent": americas_dev_percent - americas_em_percent,
+        "percent": (americasDev / (americasEm + americasDev)) * 100,
         "position": 1
       },
       americas_em:{
         "name": "americas",
         "type": "em",
-        "percent": americas_em_percent,
+        "percent": (americasEm / (americasEm + americasDev)) * 100,
         "position": 1
       },
       asia_dev: {
         "name": "asia",
         "type": "dev",
-        "percent": asia_dev_percent - asia_em_percent,
+        "percent": (asiaDev / (asiaEm + asiaDev)) * 100,
         "position": 2
       },
       asia_em: {
         "name": "asia",
         "type": "em",
-        "percent": asia_em_percent,
+        "percent": (asiaEm / (asiaEm + asiaDev)) * 100,
         "position": 2
       },
       eu_dev: {
         "name": "eu",
         "type": "dev",
-        "percent": eu_dev_percent - eu_em_percent,
+        "percent": (euDev / (euEm + euDev)) * 100,
         "position": 3
       },
       eu_em: {
         "name": "eu",
         "type": "em",
-        "percent": eu_em_percent,
+        "percent": (euEm / (euEm + euDev)) * 100,
         "position": 3
       },
       ame_dev: {
         "name": "ame",
         "type": "dev",
-        "percent": ame_dev_percent - ame_em_percent,
+        "percent": (ameDev / (ameEm + ameDev)) * 100,
         "position": 4
       },
       ame_em: {
         "name": "ame",
         "type": "em",
-        "percent": ame_em_percent,
+        "percent": (ameEm / (ameEm + ameDev)) * 100,
         "position": 4
       }
     };
@@ -826,7 +890,9 @@ var App = React.createClass({
           />
           <footer>
             By <a href="http://meagher.co">Tom Meagher</a> / 
-            Source on <a href="https://github.com/tmm/chernoff-fish">GitHub</a>          </footer>
+            Source on <a href="https://github.com/tmm/chernoff-fish">GitHub</a> /
+            Concept from <a href="http://www.wiley.com/WileyCDA/WileyTitle/productCd-111890785X.html"><i>VFD</i></a>
+            </footer>
         </div>
       </div>
     );
@@ -834,6 +900,6 @@ var App = React.createClass({
 });
 
 ReactDOM.render(
-  <App width={500} height={500} />,
+  <App />,
   document.getElementById("app")
 );
