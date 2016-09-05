@@ -55,59 +55,6 @@ function updateWindow(){
 }
 window.onresize = updateWindow;
 
-var fish = {
-  "spines": [
-    {
-      "name": "americas",
-      "type": "dev",
-      "height": 55,
-      "position": 1
-    },
-    {
-      "name": "americas",
-      "type": "em",
-      "height": 40,
-      "position": 1
-    },
-    {
-      "name": "asia",
-      "type": "dev",
-      "height": 40,
-      "position": 2
-    },
-    {
-      "name": "asia",
-      "type": "em",
-      "height": 40,
-      "position": 2
-    },
-    {
-      "name": "eu",
-      "type": "dev",
-      "height": 60,
-      "position": 3
-    },
-    {
-      "name": "eu",
-      "type": "em",
-      "height": 20,
-      "position": 3
-    },
-    {
-      "name": "ame",
-      "type": "dev",
-      "height": 40,
-      "position": 4
-    },
-    {
-      "name": "ame",
-      "type": "em",
-      "height": 60,
-      "position": 4
-    },
-  ]
-};
-
 var spineScale = d3.scaleLinear()
   .clamp(true)
   .domain([0, 100])
@@ -138,7 +85,7 @@ var Spine = React.createClass({
       >
         <path
           className={spine.type}
-          d={drawSpine(spine.position, SPINE_WIDTH, spine.height)}
+          d={drawSpine(spine.position, SPINE_WIDTH, spine.percent)}
         >
         </path>
       </g>
@@ -149,7 +96,7 @@ var Spine = React.createClass({
 var Spines = React.createClass({
   render: function() {
     const transform = "translate(" + (WIDTH / 4.6) + "," + bodyScale(-this.props.back / 2.5 ) + ")";
-    const spines = fish.spines.map(function(spine) {
+    const spines = this.props.spines.map(function(spine) {
       return <Spine spine={spine} key={spine.name + "-" + spine.type} />;
     });
     return (
@@ -157,7 +104,7 @@ var Spines = React.createClass({
         id="spines"
         transform={transform}
       >
-      {spines}
+        {spines}
       </g>
     );
   }
@@ -235,7 +182,7 @@ var Tail = React.createClass({
       <g
         id="tail"
       >
-      {fins}
+        {fins}
       </g>
     );
   }
@@ -245,6 +192,16 @@ var Fish = React.createClass({
   render: function() {
     const transform = "translate(" + getXPosition() + "," + getYPosition() + ")";
     const fins = [this.props.sensative, this.props.cyclical];
+    const spines = [
+      this.props.americas_dev,
+      this.props.americas_em,
+      this.props.asia_dev,
+      this.props.asia_em,
+      this.props.eu_dev,
+      this.props.eu_em,
+      this.props.ame_dev,
+      this.props.ame_em
+    ];
     return (
       <svg>
         <g
@@ -252,7 +209,7 @@ var Fish = React.createClass({
           className={this.props.strategy}
           transform={transform}
         >
-          <Spines back={this.props.style} />
+          <Spines back={this.props.style} spines={spines} />
           <Body back={this.props.style} belly={this.props.market_cap} />
           <Eye eye={this.props.f_return} />
           <Fin fin={this.props.defensive}  />
@@ -296,11 +253,61 @@ var Form = React.createClass({
     );
   },
 
+  handleAmericasDevSliderChange: function(value) {
+    this.props.americasDevSliderChange(
+      value
+    );
+  },
+
+  handleAmericasEmSliderChange: function(value) {
+    this.props.americasEmSliderChange(
+      value
+    );
+  },
+
+  handleAsiaDevSliderChange: function(value) {
+    this.props.asiaDevSliderChange(
+      value
+    );
+  },
+
+  handleAsiaEmSliderChange: function(value) {
+    this.props.asiaEmSliderChange(
+      value
+    );
+  },
+
+  handleEuropeDevSliderChange: function(value) {
+    this.props.europeDevSliderChange(
+      value
+    );
+  },
+
+  handleEuropeEmSliderChange: function(value) {
+    this.props.europeEmSliderChange(
+      value
+    );
+  },
+
+  handleAmeDevSliderChange: function(value) {
+    this.props.ameDevSliderChange(
+      value
+    );
+  },
+
+  handleAmeEmSliderChange: function(value) {
+    this.props.ameEmSliderChange(
+      value
+    );
+  },
+
   render: function() {
     return (
-      <form>
+      <form
+        className={this.props.strategy}
+      >
         <h1>Chernoff Fish with <a href="https://d3js.org">D3</a> & <a href="https://facebook.github.io/react/">React</a></h1>
-        <h3>General</h3>
+        <h3>1. General</h3>
 
         <div className="field">
           <div className="label-container">
@@ -362,7 +369,7 @@ var Form = React.createClass({
           </div>
         </div>
 
-        <h3>Sector</h3>
+        <h3>2. Sector</h3>
 
         <div className="field">
           <div className="label-container">
@@ -403,7 +410,7 @@ var Form = React.createClass({
           </div>
         </div>
 
-        <h3>Region</h3>
+        <h3>3. Region</h3>
 
         <h4>Americas</h4>
 
@@ -414,7 +421,8 @@ var Form = React.createClass({
             </div>
             <div className="slider">
               <Rcslider
-                defaultValue={this.props.sensative.percent}
+                onChange={this.handleAmericasEmSliderChange}
+                defaultValue={this.props.americas_em.percent}
               />
             </div>
           </div>
@@ -425,7 +433,8 @@ var Form = React.createClass({
             </div>
             <div className="slider">
               <Rcslider
-                defaultValue={this.props.sensative.percent}
+                onChange={this.handleAmericasDevSliderChange}
+                defaultValue={this.props.americas_dev.percent}
               />
             </div>
           </div>
@@ -440,7 +449,8 @@ var Form = React.createClass({
             </div>
             <div className="slider">
               <Rcslider
-                defaultValue={this.props.sensative.percent}
+                onChange={this.handleAsiaEmSliderChange}
+                defaultValue={this.props.asia_em.percent}
               />
             </div>
           </div>
@@ -451,7 +461,8 @@ var Form = React.createClass({
             </div>
             <div className="slider">
               <Rcslider
-                defaultValue={this.props.sensative.percent}
+                onChange={this.handleAsiaDevSliderChange}
+                defaultValue={this.props.asia_dev.percent}
               />
             </div>
           </div>
@@ -466,7 +477,8 @@ var Form = React.createClass({
             </div>
             <div className="slider">
               <Rcslider
-                defaultValue={this.props.sensative.percent}
+                onChange={this.handleEuropeEmSliderChange}
+                defaultValue={this.props.eu_em.percent}
               />
             </div>
           </div>
@@ -477,7 +489,8 @@ var Form = React.createClass({
             </div>
             <div className="slider">
               <Rcslider
-                defaultValue={this.props.sensative.percent}
+                onChange={this.handleEuropeDevSliderChange}
+                defaultValue={this.props.eu_dev.percent}
               />
             </div>
           </div>
@@ -492,7 +505,8 @@ var Form = React.createClass({
             </div>
             <div className="slider">
               <Rcslider
-                defaultValue={this.props.sensative.percent}
+                onChange={this.handleAmeEmSliderChange}
+                defaultValue={this.props.ame_em.percent}
               />
             </div>
           </div>
@@ -503,7 +517,8 @@ var Form = React.createClass({
             </div>
             <div className="slider">
               <Rcslider
-                defaultValue={this.props.sensative.percent}
+                onChange={this.handleAmeDevSliderChange}
+                defaultValue={this.props.ame_dev.percent}
               />
             </div>
           </div>
@@ -536,11 +551,59 @@ var App = React.createClass({
         "name": "sensative",
         "percent": 33,
         "direction": 1
-      }
+      },
+      americas_dev: {
+        "name": "americas",
+        "type": "dev",
+        "percent": 55,
+        "position": 1
+      },
+      americas_em:{
+        "name": "americas",
+        "type": "em",
+        "percent": 40,
+        "position": 1
+      },
+      asia_dev: {
+        "name": "asia",
+        "type": "dev",
+        "percent": 40,
+        "position": 2
+      },
+      asia_em: {
+        "name": "asia",
+        "type": "em",
+        "percent": 40,
+        "position": 2
+      },
+      eu_dev: {
+        "name": "eu",
+        "type": "dev",
+        "percent": 60,
+        "position": 3
+      },
+      eu_em: {
+        "name": "eu",
+        "type": "em",
+        "percent": 20,
+        "position": 3
+      },
+      ame_dev: {
+        "name": "ame",
+        "type": "dev",
+        "percent": 40,
+        "position": 4
+      },
+      ame_em: {
+        "name": "ame",
+        "type": "em",
+        "percent": 60,
+        "position": 4
+      },
     };
   },
 
-  handleUserInput: function(strategy, style, market_cap, f_return, defensive) {
+  handleUserInput: function(strategy, style, market_cap) {
     this.setState({
       strategy: strategy,
       style: style,
@@ -584,6 +647,94 @@ var App = React.createClass({
     });
   },
 
+  handleAmericasDevSliderChange: function(percent) {
+    this.setState({
+      americas_dev: {
+        "name": "americas",
+        "type": "dev",
+        "percent": percent,
+        "position": 1
+      }
+    });
+  },
+
+  handleAmericasEmSliderChange: function(percent) {
+    this.setState({
+      americas_em: {
+        "name": "americas",
+        "type": "em",
+        "percent": percent,
+        "position": 1
+      }
+    });
+  },
+
+  handleAsiaDevSliderChange: function(percent) {
+    this.setState({
+      asia_dev: {
+        "name": "asia",
+        "type": "dev",
+        "percent": percent,
+        "position": 2
+      }
+    });
+  },
+
+  handleAsiaEmSliderChange: function(percent) {
+    this.setState({
+      asia_em: {
+        "name": "asia",
+        "type": "em",
+        "percent": percent,
+        "position": 2
+      }
+    });
+  },
+
+  handleEuropeDevSliderChange: function(percent) {
+    this.setState({
+      eu_dev: {
+        "name": "europe",
+        "type": "dev",
+        "percent": percent,
+        "position": 3
+      }
+    });
+  },
+
+  handleEuropeEmSliderChange: function(percent) {
+    this.setState({
+      eu_em: {
+        "name": "europe",
+        "type": "em",
+        "percent": percent,
+        "position": 3
+      }
+    });
+  },
+
+  handleAmeDevSliderChange: function(percent) {
+    this.setState({
+      ame_dev: {
+        "name": "ame",
+        "type": "dev",
+        "percent": percent,
+        "position": 4
+      }
+    });
+  },
+
+  handleAmeEmSliderChange: function(percent) {
+    this.setState({
+      ame_em: {
+        "name": "ame",
+        "type": "em",
+        "percent": percent,
+        "position": 4
+      }
+    });
+  },
+
   render: function() {
     return (
       <div id="main">
@@ -593,9 +744,19 @@ var App = React.createClass({
             style={this.state.style}
             market_cap={this.state.market_cap}
             f_return={this.state.f_return}
+            
             defensive={this.state.defensive}
             cyclical={this.state.cyclical}
             sensative={this.state.sensative}
+            
+            americas_dev={this.state.americas_dev}
+            americas_em={this.state.americas_em}
+            asia_dev={this.state.asia_dev}
+            asia_em={this.state.asia_em}
+            eu_dev={this.state.eu_dev}
+            eu_em={this.state.eu_em}
+            ame_dev={this.state.ame_dev}
+            ame_em={this.state.ame_em}
           >
           </Fish>
         </div>
@@ -605,7 +766,17 @@ var App = React.createClass({
             returnSliderChange={this.handleReturnInput}
             defensiveSliderChange={this.handleDefensiveInput}
             cyclicalSliderChange={this.handleCyclicalInput}
-            sensativeSliderChange={this.handleSensativeInput}
+            sensativesSliderChange={this.handleSensativeInput}
+            
+            americasDevSliderChange={this.handleAmericasDevSliderChange}
+            americasEmSliderChange={this.handleAmericasEmSliderChange}
+            asiaDevSliderChange={this.handleAsiaDevSliderChange}
+            asiaEmSliderChange={this.handleAsiaEmSliderChange}
+            europeDevSliderChange={this.handleEuropeDevSliderChange}
+            europeEmSliderChange={this.handleEuropeEmSliderChange}
+            ameDevSliderChange={this.handleAmeDevSliderChange}
+            ameEmSliderChange={this.handleAmeEmSliderChange}
+            
             strategy={this.state.strategy}
             style={this.state.style}
             market_cap={this.state.market_cap}
@@ -613,6 +784,15 @@ var App = React.createClass({
             defensive={this.state.defensive}
             cyclical={this.state.cyclical}
             sensative={this.state.sensative}
+
+            americas_dev={this.state.americas_dev}
+            americas_em={this.state.americas_em}
+            asia_dev={this.state.asia_dev}
+            asia_em={this.state.asia_em}
+            eu_dev={this.state.eu_dev}
+            eu_em={this.state.eu_em}
+            ame_dev={this.state.ame_dev}
+            ame_em={this.state.ame_em}
           />
         </div>
       </div>

@@ -46,6 +46,26 @@ svg {
 }
 
 .long {
+  a {
+    &:hover {
+      color: $blue;
+    }
+  }
+
+  .select {
+    &:hover {
+      border-color: $blue;
+    }
+  }
+
+  .rc-slider-handle {
+    border-color: $blue !important;
+  }
+
+  .rc-slider-track {
+    background-color: $blue !important;
+  }
+
   #back, .fin {
     fill: $blue;
   }
@@ -68,6 +88,26 @@ svg {
 }
 
 .short {
+  a {
+    &:hover {
+      color: $orange;
+    }
+  }
+
+  .select {
+    &:hover {
+      border-color: $orange;
+    }
+  }
+
+  .rc-slider-handle {
+    border-color: $orange !important;
+  }
+
+  .rc-slider-track {
+    background-color: $orange !important;
+  }
+
   #back, .fin {
     fill: $orange;
   }
@@ -116,14 +156,12 @@ a {
 
   &:hover {
     transition: $transition;
-    color: $blue;
-    border-bottom: 2px solid $blue-l;
   }
 }
 
 .field-container {
   display: flex;
-  margin-bottom: 1rem;
+  margin-bottom: .5rem;
 }
 
 .field-50 {
@@ -174,7 +212,6 @@ label {
 
   &:hover {
     transition: $transition;
-    border-color: $blue;
   }
 }
 
@@ -185,13 +222,3 @@ label {
 .rc-slider {
   background-color: lighten(#ddd, 5) !important;
 }
-
-.rc-slider-handle {
-  border-color: $blue !important;
-}
-
-.rc-slider-track {
-  background-color: $blue !important;
-}
-
-
