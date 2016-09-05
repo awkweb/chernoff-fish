@@ -1,4 +1,5 @@
 require('../scss/styles.scss');
+require('../index.html');
 require('rc-slider/assets/index.css');
 
 var React = require('react');
@@ -401,7 +402,7 @@ var Form = React.createClass({
           </div>
         </div>
 
-        <h3>2. Sector</h3>
+        <h3>2. Sector Exposure</h3>
 
         <div className="field">
           <div className="label-container">
@@ -451,7 +452,7 @@ var Form = React.createClass({
           </div>
         </div>
 
-        <h3>3. Region</h3>
+        <h3>3. Regional Exposure</h3>
 
         <h4>Americas</h4>
 

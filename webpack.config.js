@@ -2,12 +2,15 @@ var webpack = require('webpack');
 var path = require('path');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+const extractCSS = new ExtractTextPlugin('styles.css');
+const extractHTML = new ExtractTextPlugin('index.html');
+
 module.exports = {
   watch: true,
   context: path.join(__dirname, "src"),
   entry: "./js/app.js",
     output: {
-    path: __dirname + "/src/",
+    path: __dirname + "/dist/",
     filename: "app.min.js"
   },
   module: {
@@ -22,17 +25,20 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('css!sass')
+        loader: extractCSS.extract('css!sass')
       },
       {
         test: /\.css$/,
         loader: "style-loader!css-loader"
+      },
+      {
+        test: /\.html$/,
+        loader: extractHTML.extract('html')
       }
     ]
   },
   plugins: [
-    new ExtractTextPlugin('styles.css', {
-      allChunks: true
-    })
+    extractCSS,
+    extractHTML
   ]
 };
