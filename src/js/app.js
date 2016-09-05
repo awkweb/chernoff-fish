@@ -1,10 +1,12 @@
 require('../scss/styles.scss');
+require('rc-slider/assets/index.css');
 
 var React = require('react');
 var ReactDOM = require('react-dom');
+var Rcslider = require('rc-slider');
 var d3 = require('d3');
 
-var WIDTH = 500,
+const WIDTH = 500,
   HEIGHT = 500,
   BREAKPOINT = 768,
   BODY_HEIGHT = 350,
@@ -54,12 +56,6 @@ function updateWindow(){
 window.onresize = updateWindow;
 
 var fish = {
-  "strategy": "long",
-  "return": 30,
-  "body": {
-    "style": 40,
-    "market_cap": 20
-  },
   "spines": [
     {
       "name": "americas",
@@ -109,27 +105,11 @@ var fish = {
       "height": 60,
       "position": 4
     },
-  ],
-  "tail": [
-    {
-      "name": "sensative",
-      "size": 15,
-      "direction": 1
-    },
-    {
-      "name": "cyclical",
-      "size": 40,
-      "direction": -1
-    }
-  ],
-  "fin": {
-      "name": "defensive",
-      "size": 45,
-      "direction": 1
-  }
+  ]
 };
 
 var spineScale = d3.scaleLinear()
+  .clamp(true)
   .domain([0, 100])
   .range([0, SPINE_HEIGHT]);
 
@@ -138,10 +118,12 @@ var bodyScale = d3.scaleLinear()
   .range([0, BODY_HEIGHT]);
 
 var eyeScale = d3.scaleLinear()
+  .clamp(true)
   .domain([0, 100])
   .range([0, EYE_RADIUS - 1]);
 
 var finScale = d3.scaleLinear()
+  .clamp(true)
   .domain([0, 100])
   .range([0, SPINE_SIZE]);
 
@@ -166,7 +148,7 @@ var Spine = React.createClass({
 
 var Spines = React.createClass({
   render: function() {
-    const transform = "translate(" + (WIDTH / 4.6) + "," + bodyScale(-fish.body.style / 2.5) + ")";
+    const transform = "translate(" + (WIDTH / 4.6) + "," + bodyScale(-this.props.back / 2.5 ) + ")";
     const spines = fish.spines.map(function(spine) {
       return <Spine spine={spine} key={spine.name + "-" + spine.type} />;
     });
@@ -187,12 +169,12 @@ var Body = React.createClass({
       <g id="body">
         <path
           id="belly"
-          d={drawBody(0, 0, WIDTH/2, bodyScale(fish.body.market_cap))}
+          d={drawBody(0, 0, WIDTH/2, bodyScale(this.props.belly))}
         >
         </path>
         <path
           id="back"
-          d={drawBody(0, 0, WIDTH/2, -bodyScale(fish.body.style))}
+          d={drawBody(0, 0, WIDTH/2, -bodyScale(this.props.back))}
         >
         </path>
       </g>
@@ -217,7 +199,7 @@ var Eye = React.createClass({
         </circle>
         <circle
           id="eye-pupil"
-          r={eyeScale(fish.return)}
+          r={eyeScale(this.props.eye)}
         >
         </circle>
       </g>
@@ -236,7 +218,7 @@ var Fin = React.createClass({
         transform={transform}
       >
         <path
-          d={drawFin(5, 0, finScale(fin.size), fin.direction)}
+          d={drawFin(5, 0, finScale(fin.percent), fin.direction)}
         >
         </path>
       </g>
@@ -246,7 +228,7 @@ var Fin = React.createClass({
 
 var Tail = React.createClass({
   render: function() {
-    const fins = fish.tail.map(function(fin) {
+    const fins = this.props.fins.map(function(fin) {
       return <Fin fin={fin} key={fin.name} />;
     });
     return (
@@ -259,9 +241,10 @@ var Tail = React.createClass({
   }
 });
 
-var Chart = React.createClass({
+var Fish = React.createClass({
   render: function() {
-    var transform = "translate(" + getXPosition() + "," + getYPosition() + ")";
+    const transform = "translate(" + getXPosition() + "," + getYPosition() + ")";
+    const fins = [this.props.sensative, this.props.cyclical];
     return (
       <svg>
         <g
@@ -269,11 +252,11 @@ var Chart = React.createClass({
           className={this.props.strategy}
           transform={transform}
         >
-          <Spines />
-          <Body />
-          <Eye />
-          <Fin fin={fish.fin} />
-          <Tail />
+          <Spines back={this.props.style} />
+          <Body back={this.props.style} belly={this.props.market_cap} />
+          <Eye eye={this.props.f_return} />
+          <Fin fin={this.props.defensive}  />
+          <Tail fins={fins} />
         </g>
       </svg>
     );
@@ -284,19 +267,144 @@ var Form = React.createClass({
   handleChange: function(event) {
     this.props.onUserInput(
       this.refs.strategy.value,
+      this.refs.style.value,
+      this.refs.market_cap.value
+    );
+  },
+
+  handleReturnSliderChange: function(value) {
+    this.props.returnSliderChange(
+      value
+    );
+  },
+
+  handleDefensiveSliderChange: function(value) {
+    this.props.defensiveSliderChange(
+      value
+    );
+  },
+
+  handleCyclicalSliderChange: function(value) {
+    this.props.cyclicalSliderChange(
+      value
+    );
+  },
+
+  handleSensativeSliderChange: function(value) {
+    this.props.sensativeSliderChange(
+      value
     );
   },
 
   render: function() {
     return (
       <form>
-        <select
-          ref="strategy"
-          onChange={this.handleChange}
-        >
-          <option value="long">Long</option>
-          <option value="short">Short</option>
-        </select>
+        <h1>Chernoff Fish with <a href="https://d3js.org">D3</a> & <a href="https://facebook.github.io/react/">React</a></h1>
+        <h3>General</h3>
+
+        <div className="field">
+          <div className="label-container">
+            <label htmlFor="strategy">Investment Strategy</label>
+            <span className="help">Fund type</span>
+          </div>
+          <select
+            ref="strategy"
+            onChange={this.handleChange}
+            className="select"
+          >
+            <option value="long">Long</option>
+            <option value="short">Short</option>
+          </select>
+        </div>
+
+        <div className="field">
+          <div className="label-container">
+            <label htmlFor="style">Investment Style</label>
+            <span className="help">Overarching theory</span>
+          </div>
+          <select
+            ref="style"
+            onChange={this.handleChange}
+            className="select"
+          >
+            <option value="33">Growth</option>
+            <option value="66">Core</option>
+            <option value="99">Value</option>
+          </select>
+        </div>
+
+        <div className="field">
+          <div className="label-container">
+            <label htmlFor="market_cap">Market Capitalization</label>
+            <span className="help">Total market value</span>
+          </div>
+          <select
+            ref="market_cap"
+            onChange={this.handleChange}
+            className="select"
+          >
+            <option value="33">Small</option>
+            <option value="66">Medium</option>
+            <option value="99">Large</option>
+          </select>
+        </div>
+
+        <div className="field">
+          <div className="label-container">
+            <label htmlFor="return">Performance</label>
+            <span className="help">Return as % of category max</span>
+          </div>
+          <div className="slider">
+            <Rcslider
+              onChange={this.handleReturnSliderChange}
+              defaultValue={this.props.f_return}
+            />
+          </div>
+        </div>
+
+        <h3>Sector</h3>
+
+        <div className="field">
+          <div className="label-container">
+            <label htmlFor="defensive">Defensive</label>
+            <span className="help">Consumer staples, health care, utilities</span>
+          </div>
+          <div className="slider">
+            <Rcslider
+              onChange={this.handleDefensiveSliderChange}
+              defaultValue={this.props.defensive.percent}
+            />
+          </div>
+        </div>
+
+        <div className="field">
+          <div className="label-container">
+            <label htmlFor="cyclical">Cyclical</label>
+            <span className="help">Materials, financial, consumer discr.</span>
+          </div>
+          <div className="slider">
+            <Rcslider
+              onChange={this.handleCyclicalSliderChange}
+              defaultValue={this.props.cyclical.percent}
+            />
+          </div>
+        </div>
+
+        <div className="field">
+          <div className="label-container">
+            <label htmlFor="sensative">Sensative</label>
+            <span className="help">Technology, energy, industrials</span>
+          </div>
+          <div className="slider">
+            <Rcslider
+              onChange={this.handleSensativeSliderChange}
+              defaultValue={this.props.sensative.percent}
+            />
+          </div>
+        </div>
+
+        <h3>Region</h3>
+
       </form>
     );
   }
@@ -307,15 +415,68 @@ var App = React.createClass({
   getInitialState: function() {
     return {
       strategy: "long",
+      style: 33,
+      market_cap: 33,
+      f_return: 33,
+      defensive: {
+        "name": "defensive",
+        "percent": 33,
+        "direction": 1
+      },
+      cyclical: {
+        "name": "cyclical",
+        "percent": 33,
+        "direction": -1
+      },
+      sensative: {
+        "name": "sensative",
+        "percent": 33,
+        "direction": 1
+      }
     };
   },
 
-  componentDidMount: function() {
-  },
-
-  handleUserInput: function(strategy) {
+  handleUserInput: function(strategy, style, market_cap, f_return, defensive) {
     this.setState({
       strategy: strategy,
+      style: style,
+      market_cap: market_cap
+    });
+  },
+
+  handleReturnInput: function(f_return) {
+    this.setState({
+      f_return: f_return
+    });
+  },
+
+  handleDefensiveInput: function(percent) {
+    this.setState({
+      defensive: {
+        "name": "defensive",
+        "percent": percent,
+        "direction": 1
+      }
+    });
+  },
+
+  handleCyclicalInput: function(percent) {
+    this.setState({
+      cyclical: {
+        "name": "cyclical",
+        "percent": percent,
+        "direction": -1
+      }
+    });
+  },
+
+  handleSensativeInput: function(percent) {
+    this.setState({
+      sensative: {
+        "name": "sensative",
+        "percent": percent,
+        "direction": 1
+      }
     });
   },
 
@@ -323,15 +484,31 @@ var App = React.createClass({
     return (
       <div id="main">
         <div id="chart">
-          <Chart
+          <Fish
             strategy={this.state.strategy}
+            style={this.state.style}
+            market_cap={this.state.market_cap}
+            f_return={this.state.f_return}
+            defensive={this.state.defensive}
+            cyclical={this.state.cyclical}
+            sensative={this.state.sensative}
           >
-          </Chart>
+          </Fish>
         </div>
         <div id="form">
           <Form
             onUserInput={this.handleUserInput}
+            returnSliderChange={this.handleReturnInput}
+            defensiveSliderChange={this.handleDefensiveInput}
+            cyclicalSliderChange={this.handleCyclicalInput}
+            sensativeSliderChange={this.handleSensativeInput}
             strategy={this.state.strategy}
+            style={this.state.style}
+            market_cap={this.state.market_cap}
+            f_return={this.state.f_return}
+            defensive={this.state.defensive}
+            cyclical={this.state.cyclical}
+            sensative={this.state.sensative}
           />
         </div>
       </div>

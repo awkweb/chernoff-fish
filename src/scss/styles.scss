@@ -4,13 +4,20 @@ $blue-l: #A8E2F7;
 $orange: #D66230;
 $orange-d: #674111;
 $orange-l: #FFAD41;
-$gray: #F3F3F3;
+$gray: #7b7b7b;
+$gray-d: #333;
+$gray-l: #F3F3F3;
+
 $md: 768px;
+$sans: Rubik, sans-serif;
+$transition: .5s;
 
 body {
   margin: 0;
   padding: 0;
   font-size: 16px;
+  font-family: $sans;
+  color: $gray-d;
 }
 
 #main {
@@ -24,13 +31,15 @@ body {
 
 #form {
   flex: 5;
+  margin-bottom: 2rem;
   padding: 1rem;
+  overflow: auto;
 }
 
 #chart {
   display: flex;
   flex: 5;
-  background-color: $gray;
+  background-color: $gray-l;
 }
 
 svg {
@@ -80,3 +89,91 @@ svg {
     fill: $orange-l;
   }
 }
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h3 {
+  font-weight: 300;
+}
+
+h3 {
+  margin: .5rem 0 1rem;
+  border-bottom: 2px solid $gray-l;
+  padding: 0 0 .5rem .2rem;
+}
+
+a {
+  text-decoration: none;
+  color: $gray;
+  border-bottom: 2px solid $gray-l;
+
+  &:hover {
+    transition: $transition;
+    color: $blue;
+    border-bottom: 2px solid $blue-l;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: .85rem;
+}
+
+.label-container {
+  display: flex;
+  margin-bottom: .15rem;
+}
+
+label {
+  flex: 1;
+  font-size: .95rem;
+  font-weight: 400;
+  padding-left: .2rem;
+  color: $gray;
+}
+
+.help {
+  padding-right: .2rem;
+  font-size: .95rem;
+  font-weight: 300;
+  color: $gray;
+}
+
+.select {
+  display: flex;
+  flex: 1;
+  border: 2px solid #ddd;
+  border-radius: 2px;
+  padding: 5px 10px;
+  padding-right: 25px;
+  background-color: #fff;
+  background: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='20' viewBox='0 0 32 20'><path fill='#7b7b7b' d='M0 0h32L16 20z'/></svg>") right 10px center no-repeat;
+  background-size: 8px 8px;color: #333;
+  font-size: 1rem;
+  -webkit-appearance: none;
+  outline: none;
+  cursor: pointer;
+
+  &:hover {
+    transition: $transition;
+    border-color: $blue;
+  }
+}
+
+.slider {
+  margin: .5rem .3rem;
+}
+
+.rc-slider-handle {
+  border-color: $blue !important;
+}
+
+.rc-slider-track {
+  background-color: $blue !important;
+}
+
+
