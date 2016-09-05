@@ -3,7 +3,8 @@ require('rc-slider/assets/index.css');
 
 var React = require('react');
 var ReactDOM = require('react-dom');
-var Rcslider = require('rc-slider');
+var Slider = require('rc-slider');
+var Tooltip = require('rc-tooltip');
 var d3 = require('d3');
 
 const WIDTH = 500,
@@ -82,16 +83,23 @@ var Spine = React.createClass({
   render: function() {
     const spine = this.props.spine;
     const id = spine.name + "-" + spine.type;
+    const text = `${Math.round(spine.percent)}% ${spine.name} ${spine.type}`;
     return (
       <g
         id={id}
         className="spine"
       >
-        <path
-          className={spine.type}
-          d={drawSpine(spine.position, SPINE_WIDTH, spine.percent)}
+        <Tooltip
+          placement="left"
+          overlay={text}
+          transitionName="rc-slider-tooltip-zoom-down"
         >
-        </path>
+          <path
+            className={spine.type}
+            d={drawSpine(spine.position, SPINE_WIDTH, spine.percent)}
+          >
+          </path>
+        </Tooltip>
       </g>
     );
   }
@@ -136,6 +144,7 @@ var Body = React.createClass({
 var Eye = React.createClass({
   render: function() {
     const transform = "translate(" + ((WIDTH / 2) / 1.2) + "," + 0 + ")";
+    const text = `${Math.round(this.props.eye)}% return`;
     return (
       <g
         id="eye"
@@ -148,11 +157,17 @@ var Eye = React.createClass({
           cy="0"
         >
         </circle>
-        <circle
-          id="eye-pupil"
-          r={eyeScale(this.props.eye)}
-        >
-        </circle>
+        <Tooltip
+            placement="left"
+            overlay={text}
+            transitionName="rc-slider-tooltip-zoom-down"
+          >
+            <circle
+              id="eye-pupil"
+              r={eyeScale(this.props.eye)}
+            >
+            </circle>
+        </Tooltip>
       </g>
     );
   }
@@ -162,16 +177,23 @@ var Fin = React.createClass({
   render: function() {
     const fin = this.props.fin;
     const transform = fin.name === "defensive" ? "translate(" + (WIDTH / 3.45) + "," + 10 + ")" : "translate(0,0)";
+    const text = `${Math.round(fin.percent)}% ${fin.name}`;
     return (
       <g
         id={fin.name}
         className="fin"
         transform={transform}
       >
-        <path
-          d={drawFin(5, 0, finScale(fin.percent), fin.direction)}
-        >
-        </path>
+        <Tooltip
+            placement="left"
+            overlay={text}
+            transitionName="rc-slider-tooltip-zoom-down"
+          >
+            <path
+              d={drawFin(5, 0, finScale(fin.percent), fin.direction)}
+            >
+            </path>
+        </Tooltip>
       </g>
     );
   }
@@ -369,7 +391,7 @@ var Form = React.createClass({
             <span className="help">Return as % of category max</span>
           </div>
           <div className="slider">
-            <Rcslider
+            <Slider
               onChange={this.handleReturnSliderChange}
               defaultValue={this.props.f_return}
               value={this.props.f_return}
@@ -387,7 +409,7 @@ var Form = React.createClass({
             <span className="help">Consumer staples, health care, utilities</span>
           </div>
           <div className="slider">
-            <Rcslider
+            <Slider
               onChange={this.handleDefensiveSliderChange}
               defaultValue={this.props.defensive.percent}
               value={this.props.defensive.percent}
@@ -403,7 +425,7 @@ var Form = React.createClass({
             <span className="help">Materials, financial, consumer discr.</span>
           </div>
           <div className="slider">
-            <Rcslider
+            <Slider
               onChange={this.handleCyclicalSliderChange}
               defaultValue={this.props.cyclical.percent}
               value={this.props.cyclical.percent}
@@ -419,7 +441,7 @@ var Form = React.createClass({
             <span className="help">Technology, energy, industrials</span>
           </div>
           <div className="slider">
-            <Rcslider
+            <Slider
               onChange={this.handleSensativeSliderChange}
               defaultValue={this.props.sensative.percent}
               value={this.props.sensative.percent}
@@ -439,7 +461,7 @@ var Form = React.createClass({
               <label htmlFor="americas-emerging">Emerging</label>
             </div>
             <div className="slider">
-              <Rcslider
+              <Slider
                 onChange={this.handleAmericasEmSliderChange}
                 defaultValue={this.props.americas_em.percent}
                 value={this.props.americas_em.percent}
@@ -454,7 +476,7 @@ var Form = React.createClass({
               <label htmlFor="americas-developed">Developed</label>
             </div>
             <div className="slider">
-              <Rcslider
+              <Slider
                 onChange={this.handleAmericasDevSliderChange}
                 defaultValue={this.props.americas_dev.percent}
                 value={this.props.americas_dev.percent}
@@ -473,7 +495,7 @@ var Form = React.createClass({
               <label htmlFor="asia-emerging">Emerging</label>
             </div>
             <div className="slider">
-              <Rcslider
+              <Slider
                 onChange={this.handleAsiaEmSliderChange}
                 defaultValue={this.props.asia_em.percent}
                 value={this.props.asia_em.percent}
@@ -488,7 +510,7 @@ var Form = React.createClass({
               <label htmlFor="asia-developed">Developed</label>
             </div>
             <div className="slider">
-              <Rcslider
+              <Slider
                 onChange={this.handleAsiaDevSliderChange}
                 defaultValue={this.props.asia_dev.percent}
                 value={this.props.asia_dev.percent}
@@ -507,7 +529,7 @@ var Form = React.createClass({
               <label htmlFor="europe-emerging">Emerging</label>
             </div>
             <div className="slider">
-              <Rcslider
+              <Slider
                 onChange={this.handleEuropeEmSliderChange}
                 defaultValue={this.props.eu_em.percent}
                 value={this.props.eu_em.percent}
@@ -522,7 +544,7 @@ var Form = React.createClass({
               <label htmlFor="europe-developed">Developed</label>
             </div>
             <div className="slider">
-              <Rcslider
+              <Slider
                 onChange={this.handleEuropeDevSliderChange}
                 defaultValue={this.props.eu_dev.percent}
                 value={this.props.eu_dev.percent}
@@ -541,7 +563,7 @@ var Form = React.createClass({
               <label htmlFor="ame-emerging">Emerging</label>
             </div>
             <div className="slider">
-              <Rcslider
+              <Slider
                 onChange={this.handleAmeEmSliderChange}
                 defaultValue={this.props.ame_em.percent}
                 value={this.props.ame_em.percent}
@@ -556,7 +578,7 @@ var Form = React.createClass({
               <label htmlFor="ame-developed">Developed</label>
             </div>
             <div className="slider">
-              <Rcslider
+              <Slider
                 onChange={this.handleAmeDevSliderChange}
                 defaultValue={this.props.ame_dev.percent}
                 value={this.props.ame_dev.percent}
