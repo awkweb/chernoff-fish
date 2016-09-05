@@ -405,6 +405,110 @@ var Form = React.createClass({
 
         <h3>Region</h3>
 
+        <h4>Americas</h4>
+
+        <div className="field-container">
+          <div className="field field-50">
+            <div className="label-container">
+              <label htmlFor="americas-emerging">Emerging</label>
+            </div>
+            <div className="slider">
+              <Rcslider
+                defaultValue={this.props.sensative.percent}
+              />
+            </div>
+          </div>
+
+          <div className="field field-50">
+            <div className="label-container">
+              <label htmlFor="americas-developed">Developed</label>
+            </div>
+            <div className="slider">
+              <Rcslider
+                defaultValue={this.props.sensative.percent}
+              />
+            </div>
+          </div>
+        </div>
+
+        <h4>Asia</h4>
+
+        <div className="field-container">
+          <div className="field field-50">
+            <div className="label-container">
+              <label htmlFor="asia-emerging">Emerging</label>
+            </div>
+            <div className="slider">
+              <Rcslider
+                defaultValue={this.props.sensative.percent}
+              />
+            </div>
+          </div>
+
+          <div className="field field-50">
+            <div className="label-container">
+              <label htmlFor="asia-developed">Developed</label>
+            </div>
+            <div className="slider">
+              <Rcslider
+                defaultValue={this.props.sensative.percent}
+              />
+            </div>
+          </div>
+        </div>
+
+        <h4>Europe</h4>
+
+        <div className="field-container">
+          <div className="field field-50">
+            <div className="label-container">
+              <label htmlFor="europe-emerging">Emerging</label>
+            </div>
+            <div className="slider">
+              <Rcslider
+                defaultValue={this.props.sensative.percent}
+              />
+            </div>
+          </div>
+
+          <div className="field field-50">
+            <div className="label-container">
+              <label htmlFor="europe-developed">Developed</label>
+            </div>
+            <div className="slider">
+              <Rcslider
+                defaultValue={this.props.sensative.percent}
+              />
+            </div>
+          </div>
+        </div>
+
+        <h4>Africa & Middle East</h4>
+
+        <div className="field-container">
+          <div className="field field-50">
+            <div className="label-container">
+              <label htmlFor="ame-emerging">Emerging</label>
+            </div>
+            <div className="slider">
+              <Rcslider
+                defaultValue={this.props.sensative.percent}
+              />
+            </div>
+          </div>
+
+          <div className="field field-50">
+            <div className="label-container">
+              <label htmlFor="ame-developed">Developed</label>
+            </div>
+            <div className="slider">
+              <Rcslider
+                defaultValue={this.props.sensative.percent}
+              />
+            </div>
+          </div>
+        </div>
+
       </form>
     );
   }
