@@ -129,6 +129,32 @@ svg {
   }
 }
 
+button {
+  position: absolute;
+  left: 1rem;
+  border: 2px solid #bbb;
+  border-radius: 2px;
+  padding: 10px 15px;
+  color: $gray-d;
+  background-color: #bbb;
+  font-size: 1rem;
+  -webkit-appearance: none;
+  cursor: pointer;
+
+  @media screen and (min-width: $md) {
+    bottom: 1rem;
+  }
+
+  @media screen and (max-width: $md) {
+    top: 1rem;
+  }
+
+  &:hover {
+    transition: $transition;
+    border-color: $gray;
+  }
+}
+
 form {
   display: flex;
   flex-direction: column;
@@ -221,4 +247,12 @@ label {
 
 .rc-slider {
   background-color: lighten(#ddd, 5) !important;
+}
+
+footer {
+  margin: 1rem 0 3rem;
+  color: $gray;
+  font-size: .95rem;
+  font-weight: 300;
+  text-transform: uppercase;
 }

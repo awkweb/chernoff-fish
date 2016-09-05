@@ -248,7 +248,7 @@ var Form = React.createClass({
   },
 
   handleSensativeSliderChange: function(value) {
-    this.props.sensativeSliderChange(
+    this.props.sensativesSliderChange(
       value
     );
   },
@@ -333,6 +333,7 @@ var Form = React.createClass({
             ref="style"
             onChange={this.handleChange}
             className="select"
+            value={this.props.style}
           >
             <option value="33">Growth</option>
             <option value="66">Core</option>
@@ -349,6 +350,7 @@ var Form = React.createClass({
             ref="market_cap"
             onChange={this.handleChange}
             className="select"
+            value={this.props.market_cap}
           >
             <option value="33">Small</option>
             <option value="66">Medium</option>
@@ -531,12 +533,25 @@ var Form = React.createClass({
 
 var App = React.createClass({
 
-  getInitialState: function() {
+  generateRandomValues: function() {
+    const f_return = Math.ceil(Math.random() * 100);
+    const styleAndMarketCap = [33, 66, 99];
+    const style = styleAndMarketCap[Math.ceil(Math.random() * 3 - 1)];
+    const market_cap = styleAndMarketCap[Math.ceil(Math.random() * 3 - 1)];
+    const americas_em_percent = Math.ceil(Math.random() * 100);
+    var americas_dev_percent = 100;
+    const asia_em_percent = Math.ceil(Math.random() * 100);
+    var asia_dev_percent = 100;
+    const eu_em_percent = Math.ceil(Math.random() * 100);
+    var eu_dev_percent = 100;
+    const ame_em_percent = Math.ceil(Math.random() * 100);
+    var ame_dev_percent = 100;
+
     return {
       strategy: "long",
-      style: 33,
-      market_cap: 33,
-      f_return: 33,
+      style: style,
+      market_cap: market_cap,
+      f_return: f_return,
       defensive: {
         "name": "defensive",
         "percent": 33,
@@ -555,52 +570,62 @@ var App = React.createClass({
       americas_dev: {
         "name": "americas",
         "type": "dev",
-        "percent": 55,
+        "percent": americas_dev_percent - americas_em_percent,
         "position": 1
       },
       americas_em:{
         "name": "americas",
         "type": "em",
-        "percent": 40,
+        "percent": americas_em_percent,
         "position": 1
       },
       asia_dev: {
         "name": "asia",
         "type": "dev",
-        "percent": 40,
+        "percent": asia_dev_percent - asia_em_percent,
         "position": 2
       },
       asia_em: {
         "name": "asia",
         "type": "em",
-        "percent": 40,
+        "percent": asia_em_percent,
         "position": 2
       },
       eu_dev: {
         "name": "eu",
         "type": "dev",
-        "percent": 60,
+        "percent": eu_dev_percent - eu_em_percent,
         "position": 3
       },
       eu_em: {
         "name": "eu",
         "type": "em",
-        "percent": 20,
+        "percent": eu_em_percent,
         "position": 3
       },
       ame_dev: {
         "name": "ame",
         "type": "dev",
-        "percent": 40,
+        "percent": ame_dev_percent - ame_em_percent,
         "position": 4
       },
       ame_em: {
         "name": "ame",
         "type": "em",
-        "percent": 60,
+        "percent": ame_em_percent,
         "position": 4
-      },
+      }
     };
+  },
+
+  randomFish: function() {
+    var rands = this.generateRandomValues();
+    this.setState(rands);
+  },
+
+  getInitialState: function() {
+    var rands = this.generateRandomValues();
+    return rands;
   },
 
   handleUserInput: function(strategy, style, market_cap) {
@@ -637,7 +662,7 @@ var App = React.createClass({
     });
   },
 
-  handleSensativeInput: function(percent) {
+  handleSensativesInput: function(percent) {
     this.setState({
       sensative: {
         "name": "sensative",
@@ -759,6 +784,11 @@ var App = React.createClass({
             ame_em={this.state.ame_em}
           >
           </Fish>
+          <button
+            onClick={this.randomFish}
+          >
+            Randomize
+          </button>
         </div>
         <div id="form">
           <Form
@@ -766,7 +796,7 @@ var App = React.createClass({
             returnSliderChange={this.handleReturnInput}
             defensiveSliderChange={this.handleDefensiveInput}
             cyclicalSliderChange={this.handleCyclicalInput}
-            sensativesSliderChange={this.handleSensativeInput}
+            sensativesSliderChange={this.handleSensativesInput}
             
             americasDevSliderChange={this.handleAmericasDevSliderChange}
             americasEmSliderChange={this.handleAmericasEmSliderChange}
@@ -794,6 +824,9 @@ var App = React.createClass({
             ame_dev={this.state.ame_dev}
             ame_em={this.state.ame_em}
           />
+          <footer>
+            By <a href="http://meagher.co">Tom Meagher</a> / 
+            Source on <a href="https://github.com/tmm/chernoff-fish">GitHub</a>          </footer>
         </div>
       </div>
     );
