@@ -218,7 +218,7 @@ var Tail = React.createClass({
 var Fish = React.createClass({
   render: function() {
     const transform = "translate(" + getXPosition(WIDTH, BREAKPOINT) + "," + getYPosition(BREAKPOINT) + ")";
-    const fins = [this.props.sensative, this.props.cyclical];
+    const fins = [this.props.sensitive, this.props.cyclical];
     const spines = [
       this.props.americas_dev,
       this.props.americas_em,
@@ -274,8 +274,8 @@ var Form = React.createClass({
     );
   },
 
-  handleSensativeSliderChange: function(value) {
-    this.props.sensativesSliderChange(
+  handleSensitiveSliderChange: function(value) {
+    this.props.sensitivesSliderChange(
       value
     );
   },
@@ -438,14 +438,14 @@ var Form = React.createClass({
 
         <div className="field">
           <div className="label-container">
-            <label htmlFor="sensative">Sensative</label>
+            <label htmlFor="sensitive">Sensitive</label>
             <span className="help">Technology, energy, industrials</span>
           </div>
           <div className="slider">
             <Slider
-              onChange={this.handleSensativeSliderChange}
-              defaultValue={this.props.sensative.percent}
-              value={this.props.sensative.percent}
+              onChange={this.handleSensitiveSliderChange}
+              defaultValue={this.props.sensitive.percent}
+              value={this.props.sensitive.percent}
               tipFormatter={percentFormatter}
               tipTransitionName="rc-slider-tooltip-zoom-down"
             />
@@ -610,8 +610,8 @@ var App = React.createClass({
     
     const defensive = this.getRandomNumber(100);
     const cyclical = this.getRandomNumber(100);
-    const sensative = this.getRandomNumber(100);
-    const sectorTotal = defensive + cyclical + sensative;
+    const sensitive = this.getRandomNumber(100);
+    const sectorTotal = defensive + cyclical + sensitive;
 
     const americas = this.getRandomNumber(100);
     const asia = this.getRandomNumber(100);
@@ -649,9 +649,9 @@ var App = React.createClass({
         "percent": (cyclical / sectorTotal) * 100,
         "direction": -1
       },
-      sensative: {
-        "name": "sensative",
-        "percent": (sensative / sectorTotal) * 100,
+      sensitive: {
+        "name": "sensitive",
+        "percent": (sensitive / sectorTotal) * 100,
         "direction": 1
       },
       americas_dev: {
@@ -749,10 +749,10 @@ var App = React.createClass({
     });
   },
 
-  handleSensativesInput: function(percent) {
+  handleSensitivesInput: function(percent) {
     this.setState({
-      sensative: {
-        "name": "sensative",
+      sensitive: {
+        "name": "sensitive",
         "percent": percent,
         "direction": 1
       }
@@ -859,7 +859,7 @@ var App = React.createClass({
             
             defensive={this.state.defensive}
             cyclical={this.state.cyclical}
-            sensative={this.state.sensative}
+            sensitive={this.state.sensitive}
             
             americas_dev={this.state.americas_dev}
             americas_em={this.state.americas_em}
@@ -883,7 +883,7 @@ var App = React.createClass({
             returnSliderChange={this.handleReturnInput}
             defensiveSliderChange={this.handleDefensiveInput}
             cyclicalSliderChange={this.handleCyclicalInput}
-            sensativesSliderChange={this.handleSensativesInput}
+            sensitivesSliderChange={this.handleSensitivesInput}
             
             americasDevSliderChange={this.handleAmericasDevSliderChange}
             americasEmSliderChange={this.handleAmericasEmSliderChange}
@@ -900,7 +900,7 @@ var App = React.createClass({
             f_return={this.state.f_return}
             defensive={this.state.defensive}
             cyclical={this.state.cyclical}
-            sensative={this.state.sensative}
+            sensitive={this.state.sensitive}
 
             americas_dev={this.state.americas_dev}
             americas_em={this.state.americas_em}
